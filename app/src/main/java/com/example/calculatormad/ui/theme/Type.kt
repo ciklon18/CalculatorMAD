@@ -2,9 +2,19 @@ package com.example.calculatormad.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.calculatormad.R
+
+val googleSansMedium = FontFamily(
+    Font(R.font.opensans_medium)
+)
+
+val googleSansBOld = FontFamily(
+    Font(R.font.opensans_bold)
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
