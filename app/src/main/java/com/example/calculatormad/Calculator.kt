@@ -20,7 +20,6 @@ import com.example.calculatormad.ui.theme.googleSansMedium
 
 @Composable
 fun Calculator() {
-
     Box(
         modifier = Modifier
             .background(Color.Black)
@@ -47,8 +46,6 @@ fun Calculator() {
                 }
 
             }
-
-
             Divider(
                 color = DividerColor,
                 modifier = Modifier
@@ -74,7 +71,7 @@ fun CreateTextCalculator(){
 
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            .height(36.dp)
+            .fillMaxHeight(0.05f)
             .fillMaxWidth(),
 
         ) {

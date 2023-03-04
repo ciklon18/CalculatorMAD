@@ -28,7 +28,6 @@ fun ButtonOfCalculator(buttonName : String, groupOfButtons : Int, modifer: Modif
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifer
-
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(28.dp))
             .clickable { }
