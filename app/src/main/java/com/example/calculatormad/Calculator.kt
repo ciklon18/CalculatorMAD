@@ -3,11 +3,14 @@ package com.example.calculatormad
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calculatormad.ui.theme.CalculateZone
@@ -24,42 +27,114 @@ fun Calculator() {
             .fillMaxSize()
     ) {
         Column(Modifier.fillMaxSize()) {
+            CreateTextCalculator()
             Box(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp)
-                    .height(36.dp)
-                    .width(380.dp),
-                contentAlignment = Alignment.TopStart,
-
-                ) {
-                Text(text = "Calculator", fontSize = 28.sp, fontFamily = googleSansMedium,
-                color = TextColor)
-            }
-            Spacer(modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth())
-            Box(modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, bottom = 89.dp)
-                .fillMaxWidth()
-                .height(100.dp),
-                contentAlignment = Alignment.TopStart,
+                    .fillMaxHeight(0.32f)
+                    .fillMaxWidth()
             ){
-                Text(text = "2345,003", color = CalculateZone, fontSize = 57.sp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxHeight(0.24f)
+                            .fillMaxWidth()
+                    )
+                    CreateWorkspaceForCharterOutput()
+                    CreateWorkspaceForEnteringCharacters()
+                }
+
             }
-            Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp), color = DividerColor)
+
+
+            Divider(
+                color = DividerColor,
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+            )
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                Column(
-                    modifier = Modifier.background(Color.Black)
-                ) {
-                    CreateButtons()
-                }
-
+                CreateButtons()
             }
 
+        }
+
+    }
+}
+
+@Composable
+fun CreateTextCalculator(){
+    Box(
+        contentAlignment = Alignment.TopStart,
+
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .height(36.dp)
+            .fillMaxWidth(),
+
+        ) {
+        Text(
+            text = "Calculator",
+            fontSize = 28.sp,
+            fontFamily = googleSansMedium,
+            color = TextColor
+        )
+    }
+}
+
+@Composable
+fun CreateWorkspaceForCharterOutput(){
+    Box(
+        contentAlignment = Alignment.TopStart,
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.52f),
+    ){
+        Text(
+            text = "2345,003",
+            color = CalculateZone,
+            fontSize = 57.sp
+        )
+    }
+}
+@Composable
+fun CreateWorkspaceForEnteringCharacters(){
+    Row(
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(),
+    ){
+        Box(
+            contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(0.835f)
+        ){
+            Text(
+                text = "2345,003",
+                color = CalculateZone,
+                fontSize = 57.sp
+            )
+        }
+        Box(
+            contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier
+                .fillMaxSize()
+        ){
+            IconButton(onClick = { /*TODO*/ },) {
+                Icon(
+                    painter = painterResource(id = R.drawable.vector),
+                    contentDescription = "Delete the last element",
+                    tint = Color.White
+                )
+            }
         }
 
     }

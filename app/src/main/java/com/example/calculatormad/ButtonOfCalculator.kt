@@ -2,10 +2,7 @@ package com.example.calculatormad
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,20 +18,22 @@ import com.example.calculatormad.ui.theme.TextOfRedLilacButtons
 
 
 @Composable
-fun CalculatorButton(buttonName : String, groupOfButtons : Int){
-    val ButtonBackgroundColor = if (groupOfButtons == 1)  ButtonPurpleBlue else ButtonRedLilac
-    val FontColor = if (groupOfButtons == 1)  TextOfPurpleBlueButtons else TextOfRedLilacButtons
-    var ButtonWigth = ButtonWigth(name = buttonName);
+fun ButtonOfCalculator(buttonName : String, groupOfButtons : Int, modifer: Modifier){
+    val ButtonBackgroundColor = if (groupOfButtons == 1)
+        ButtonPurpleBlue else ButtonRedLilac
+
+    val FontColor = if (groupOfButtons == 1)
+        TextOfPurpleBlueButtons else TextOfRedLilacButtons
 
     Box(
-        modifier = Modifier
-            .clickable { }
+        contentAlignment = Alignment.Center,
+        modifier = modifer
+
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(28.dp))
-            .height(83.dp)
-            .width(ButtonWigth)
-            .background(ButtonBackgroundColor),
-        contentAlignment = Alignment.Center,
+            .clickable { }
+            .background(ButtonBackgroundColor)
+            .fillMaxHeight(),
     ) {
         Text(
             text = buttonName,
@@ -44,8 +43,3 @@ fun CalculatorButton(buttonName : String, groupOfButtons : Int){
     }
 }
 
-@Composable
-fun ButtonWigth(name : String) = when(name){
-    "0" -> 182.dp
-    else -> 83.dp
-}
