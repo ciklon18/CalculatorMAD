@@ -9,11 +9,11 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun CreateButtons(){
     val arrayOfButtons = arrayOf(
-        arrayOf("AC","±","%","/",),
-        arrayOf("7","8","9","×",),
-        arrayOf("4","5","6","-",),
-        arrayOf("1","2","3","+"),
-        arrayOf("0",",","=")
+        arrayOf(EnumAction.AbsolutelyClear,EnumAction.ChangeSign,EnumAction.Remainder,EnumAction.Divide,),
+        arrayOf(EnumAction.NumberSeven,EnumAction.NumberEight,EnumAction.NumberNine,EnumAction.Multiply,),
+        arrayOf(EnumAction.NumberFour,EnumAction.NumberFive,EnumAction.NumberSix,EnumAction.Substract),
+        arrayOf(EnumAction.NumberOne,EnumAction.NumberTwo,EnumAction.NumberThree,EnumAction.Add),
+        arrayOf(EnumAction.NumberZero,EnumAction.Double,EnumAction.Answer)
     )
     Column(
         verticalArrangement = Arrangement.SpaceAround,
@@ -32,13 +32,15 @@ fun CreateButtons(){
             ) {
                 for (j in 0..2) {
                     if (!(i == 4 && j == 2)){
-                        val symbol = arrayOfButtons[i][j]
-                        val weightOfButton = if (symbol == "0") 2f else 1f
+                        val symbol : EnumAction = arrayOfButtons[i][j]
+                        val weightOfButton = if (EnumAction.NumberZero.ordinal == 0) 2f else 1f
                         ButtonOfCalculator(
                             buttonName = symbol,
                             groupOfButtons = 1,
+                            onClick = {calculatorAction(string = symbol)},
                             Modifier
-                                .weight(weightOfButton)
+                                .weight(weightOfButton),
+
 
                         )
                     }
@@ -47,6 +49,7 @@ fun CreateButtons(){
                 ButtonOfCalculator(
                     buttonName = symbol,
                     groupOfButtons = 2,
+                    onClick = {calculatorAction(string = symbol)},
                     Modifier
                         .weight(1f)
                 )
