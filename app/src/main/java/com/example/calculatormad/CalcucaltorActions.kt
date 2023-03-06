@@ -26,27 +26,23 @@ fun calculatorAction(string: EnumAction){
 
 
 fun AddNumber(string : EnumAction) {
-    TODO("Not yet implemented")
 }
 
 
 fun Answer() {
-    TODO("Not yet implemented")
+
 }
 
 
 fun Divide() {
-    TODO("Not yet implemented")
 }
 
 
 fun Multiply() {
-    TODO("Not yet implemented")
 }
 
 
 fun Substract() {
-    TODO("Not yet implemented")
 }
 
 

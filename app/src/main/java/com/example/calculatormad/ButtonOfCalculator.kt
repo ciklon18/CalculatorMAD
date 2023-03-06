@@ -19,16 +19,16 @@ import com.example.calculatormad.ui.theme.TextOfRedLilacButtons
 
 @Composable
 fun ButtonOfCalculator(
-    buttonName : EnumAction,
-    groupOfButtons : Int,
+    enumButton : EnumAction,
+    idGroupOfButtons : Int,
     onClick: (EnumAction) -> Unit,
     modifer: Modifier,
 
-){
-    val ButtonBackgroundColor = if (groupOfButtons == 1)
+    ){
+    val ButtonBackgroundColor = if (idGroupOfButtons == 1)
         ButtonPurpleBlue else ButtonRedLilac
 
-    val FontColor = if (groupOfButtons == 1)
+    val FontColor = if (idGroupOfButtons == 1)
         TextOfPurpleBlueButtons else TextOfRedLilacButtons
 
     Box(
@@ -36,12 +36,12 @@ fun ButtonOfCalculator(
         modifier = modifer
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(28.dp))
-            .clickable { onClick.invoke(buttonName) }
+            .clickable { onClick.invoke(enumButton) }
             .background(ButtonBackgroundColor)
-            .fillMaxHeight(),
+            .fillMaxSize(),
     ) {
         Text(
-            text = buttonName.toString(),
+            text = enumButton.string,
             fontSize = 32.sp,
             color = FontColor,
         )

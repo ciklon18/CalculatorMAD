@@ -33,10 +33,10 @@ fun CreateButtons(){
                 for (j in 0..2) {
                     if (!(i == 4 && j == 2)){
                         val symbol : EnumAction = arrayOfButtons[i][j]
-                        val weightOfButton = if (EnumAction.NumberZero.ordinal == 0) 2f else 1f
+                        val weightOfButton = if (EnumAction.NumberZero.string == "0") 2f else 1f
                         ButtonOfCalculator(
-                            buttonName = symbol,
-                            groupOfButtons = 1,
+                            enumButton = symbol,
+                            idGroupOfButtons = 1,
                             onClick = {calculatorAction(string = symbol)},
                             Modifier
                                 .weight(weightOfButton),
@@ -47,8 +47,8 @@ fun CreateButtons(){
                 }
                 val symbol = arrayOfButtons[i][if(i != 4) 3 else 2]
                 ButtonOfCalculator(
-                    buttonName = symbol,
-                    groupOfButtons = 2,
+                    enumButton = symbol,
+                    idGroupOfButtons = 2,
                     onClick = {calculatorAction(string = symbol)},
                     Modifier
                         .weight(1f)

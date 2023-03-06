@@ -1,6 +1,6 @@
 package com.example.calculatormad
 
-enum class EnumAction(string: String) {
+enum class EnumAction(val string: String) {
     NumberZero("0"),
     NumberOne("1"),
     NumberTwo("2"),
