@@ -25,10 +25,10 @@ fun ButtonOfCalculator(
     modifer: Modifier,
 
     ){
-    val ButtonBackgroundColor = if (idGroupOfButtons == 1)
+    val buttonBackgroundColor = if (idGroupOfButtons == 1)
         ButtonPurpleBlue else ButtonRedLilac
 
-    val FontColor = if (idGroupOfButtons == 1)
+    val fontColor = if (idGroupOfButtons == 1)
         TextOfPurpleBlueButtons else TextOfRedLilacButtons
 
     Box(
@@ -37,13 +37,13 @@ fun ButtonOfCalculator(
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(28.dp))
             .clickable { onClick.invoke(enumButton) }
-            .background(ButtonBackgroundColor)
+            .background(buttonBackgroundColor)
             .fillMaxSize(),
     ) {
         Text(
             text = enumButton.string,
             fontSize = 32.sp,
-            color = FontColor,
+            color = fontColor,
         )
     }
 }

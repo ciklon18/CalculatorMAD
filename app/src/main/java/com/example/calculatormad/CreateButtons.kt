@@ -33,7 +33,7 @@ fun CreateButtons(){
                 for (j in 0..2) {
                     if (!(i == 4 && j == 2)){
                         val symbol : EnumAction = arrayOfButtons[i][j]
-                        val weightOfButton = if (EnumAction.NumberZero.string == "0") 2f else 1f
+                        val weightOfButton = if (symbol.string == "0") 2f else 1f
                         ButtonOfCalculator(
                             enumButton = symbol,
                             idGroupOfButtons = 1,
