@@ -22,8 +22,7 @@ fun ButtonOfCalculator(
     enumButton : EnumAction,
     idGroupOfButtons : Int,
     onClick: (EnumAction) -> Unit,
-    modifer: Modifier,
-
+    modifier: Modifier,
     ){
     val buttonBackgroundColor = if (idGroupOfButtons == 1)
         ButtonPurpleBlue else ButtonRedLilac
@@ -33,7 +32,7 @@ fun ButtonOfCalculator(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifer
+        modifier = modifier
             .padding(8.dp)
             .clip(shape = RoundedCornerShape(28.dp))
             .clickable { onClick.invoke(enumButton) }
