@@ -24,7 +24,7 @@ import kotlin.math.exp
 @Composable
 fun Calculator() {
     val expression = remember {
-        mutableStateOf("")
+        mutableStateOf("0")
     }
     Box(
         modifier = Modifier

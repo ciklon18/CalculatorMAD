@@ -2,7 +2,6 @@ package com.example.calculatormad
 
 import androidx.compose.runtime.MutableState
 
-// нужно проверять на double и количество точек не более 1
 // число максимум 9 символов, не учитывая точку, +- и просто знак
 // нужно проверять на деление на 0
 // нужно проверять на то, что введен ли какой-то символ
@@ -10,14 +9,19 @@ import androidx.compose.runtime.MutableState
 // для строки ввода отдельная проверка
 // для удаления последнего символа смена изменение double может быть, удаление знака ну и изменение самого числа
 // добавить по умолчанию значение, равное нулю
+
+
 val signs = arrayOf("+","-","*","/")
 var signExist = false
-var signIsChange = false
+var signWasChanged = false
 var firstNumberIsDouble = false
 var secondNumberIsDouble = false
-var firstNumber = ""
+var firstNumber = "0"
 var secondNumber = ""
 var currentSign = ""
+
+
+
 fun calculatorAction(expression : MutableState<String>, enumName: EnumAction){
     if (expression.value.length < 17){
         when(enumName){
@@ -71,42 +75,57 @@ fun buttonAddNumber(expression : MutableState<String>, enumName : EnumAction) { 
 }
 
 
-fun buttonAnswer(expression : MutableState<String>) {
+fun buttonAnswer(expression : MutableState<String>) { // если не введен никакой символ то ответ 0
     if (signs.contains(currentSign)){
         var result = 0.0
         if (secondNumber != "")
         {
+            if (secondNumber.get(secondNumber.length - 1) == '.'){
+                secondNumber = secondNumber.substring(0, secondNumber.length - 1)
+            }
             if (currentSign == "*"){
                 result = firstNumber.toDouble() * secondNumber.toDouble()
             } else if (currentSign == "/"){
-                result = firstNumber.toDouble() / secondNumber.toDouble()
+                result = firstNumber.toDouble() / secondNumber.toDouble() // проверка деления на ноль
             }else if (currentSign =="+"){
                 result = firstNumber.toDouble() + secondNumber.toDouble()
             }else if (currentSign == "-"){
-                result = firstNumber.toDouble() - secondNumber.toDouble()
+                result = firstNumber.toDouble() - secondNumber.toDouble() // ДОБАВИТЬ %
             }
-            expression.value = result.toString()
-            firstNumber = result.toString()
-            signIsChange = if (expression.value.get(0) == '-') true else false
+            if (result == 0.0){
+                expression.value = "0"
+                firstNumber = "0"
+            } else{
+                expression.value = result.toString() // добавить случай, когда результат после точке равен x.0, то перводить в int
+                firstNumber = result.toString()
+            }
+
+            signWasChanged = if (expression.value.get(0) == '-') true else false
             secondNumber = ""
         } else{
+            if (firstNumber.get(firstNumber.length - 1) == '.'){
+                firstNumber = firstNumber.substring(0, firstNumber.length - 1)
+            }
             if (firstNumber != ""){
                 expression.value = firstNumber
-                signIsChange = if (expression.value.get(0) == '-') true else false
+                signWasChanged = if (expression.value.get(0) == '-') true else false
             } else{
-                expression.value = "0.0"
+                expression.value = "0"
                 firstNumber = ""
-                signIsChange = false
+                signWasChanged = false
             }
         }
-        firstNumberIsDouble = false // проверить даблы
+        firstNumberIsDouble = false // проверить момент того, когда нужно изменять флаг double
         signExist = false
         secondNumberIsDouble = false
         currentSign = ""
 
     } else {
+        if (firstNumber.get(firstNumber.length - 1) == '.'){
+            firstNumber = firstNumber.substring(0, firstNumber.length - 1)
+        }
         expression.value = if (firstNumber != "") firstNumber else "0.0"
-        signIsChange = if  (expression.value.get(0) == '-') true else false
+        signWasChanged = if  (expression.value.get(0) == '-') true else false
     }
 }
 
@@ -147,22 +166,22 @@ fun buttonRemainder(expression : MutableState<String>) {
 
 
 fun buttonChangeSign(expression : MutableState<String>) {
-    if (firstNumber != "" && !signExist){
-        if (!signIsChange){
+    if (firstNumber != "" && firstNumber != "0" && !signExist){
+        if (!signWasChanged){
             firstNumber = "-" + firstNumber
             expression.value = firstNumber
-            signIsChange = true
+            signWasChanged = true
         } else if (firstNumber != ""){
             firstNumber = firstNumber.substring(1, firstNumber.length)
             expression.value = firstNumber
-            signIsChange = false
+            signWasChanged = false
         }
     }
 
 }
 
 
-fun isSignOrDoubleSymbol(isContain : String){
+fun isSignOrDoubleSymbol(isContain : String){ // перепроверить логику здесь
     if (signs.contains(isContain)){
         signExist = true
         currentSign = isContain
@@ -173,7 +192,7 @@ fun isSignOrDoubleSymbol(isContain : String){
         else
             firstNumberIsDouble = false
 }
-fun checkingTheEnteredCharacters(expression : String){
+fun checkingTheEnteredCharacters(expression : String){ // перепроверить логику здесь
     var isContain = expression.get(expression.length - 1).toString()
 
     if (signs.contains(isContain)){
@@ -188,38 +207,47 @@ fun checkingTheEnteredCharacters(expression : String){
         secondNumber = secondNumber.substring(0, secondNumber.length - 1)
         isSignOrDoubleSymbol(isContain)
     } else{
-        firstNumber = firstNumber.substring(0, firstNumber.length - 1)
+        firstNumber = firstNumber.substring(0, firstNumber.length - 1) // добавить случай, когда если 1 число имеет вид: -x, то удалить 2 символа
         isSignOrDoubleSymbol(isContain)
     }
 }
-fun buttonDeleteLastSymbol(expression : MutableState<String>) {
-    if (!expression.value.isEmpty()){
+fun buttonDeleteLastSymbol(expression : MutableState<String>){// добавить проверку на то, что если удалил одну единственную цифру 1 числа то удалить знак минус, если он был перед ним
+    if (!expression.value.isEmpty() && expression.value != "0"){
+
         var currValue = expression.value
-        checkingTheEnteredCharacters(currValue)
-        expression.value = currValue.substring(0, currValue.length - 1)
+        if (!signExist && currValue.length == 2 && currValue.get(0) == '-'){
+            firstNumber = "0"
+            signWasChanged = false
+        } else {
+            checkingTheEnteredCharacters(currValue)
+        }
+
+        expression.value = if (firstNumber != "0") currValue.substring(0, currValue.length - 1) else "0"
     }
 
 }
 
 fun buttonAllClean(expression : MutableState<String>) {
-    expression.value = ""
+    expression.value = "0"
     signExist = false
-    signIsChange = false
+    signWasChanged = false
     firstNumberIsDouble = false
     secondNumberIsDouble = false
-    firstNumber = ""
+    firstNumber = "0"
     secondNumber = ""
     currentSign = ""
 }
 
-fun buttonDouble(expression: MutableState<String>) {
-    expression.value += "."
+fun buttonDouble(expression: MutableState<String>) { // сделать проверку на то, чтобы не было повторных точек
+
     if (signExist && !secondNumberIsDouble){
+        expression.value += "."
         secondNumber += "."
         secondNumberIsDouble = true
     } else if(!firstNumberIsDouble){
+        expression.value += "."
         firstNumber += "."
-        secondNumberIsDouble = true
+        firstNumberIsDouble = true
     }
 }
 
