@@ -6,9 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.calculatormad.ui.theme.ButtonRatio
+import com.example.calculatormad.ui.theme.RowRatio
+import com.example.calculatormad.ui.theme.ZeroButtonRatio
+import com.example.calculatormad.ui.theme.ZeroSymbol
 
 @Composable
-fun CreateButtons(expression: MutableState<String>){
+fun CreateButtons(expression: MutableState<String>,answer: MutableState<String>){
     val arrayOfButtons = arrayOf(
         arrayOf(EnumAction.AllClean,EnumAction.ChangeSign,EnumAction.Remainder,EnumAction.Divide,),
         arrayOf(EnumAction.NumberSeven,EnumAction.NumberEight,EnumAction.NumberNine,EnumAction.Multiply,),
@@ -26,19 +30,19 @@ fun CreateButtons(expression: MutableState<String>){
             Row(
                 horizontalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(RowRatio)
                     .fillMaxSize()
 
             ) {
                 for (j in 0..2) {
                     if (!(i == 4 && j == 2)){
                         val symbol : EnumAction = arrayOfButtons[i][j]
-                        val weightOfButton = if (symbol.string == "0") 2f else 1f
+                        val weightOfButton = if (symbol.string == ZeroSymbol) ZeroButtonRatio else ButtonRatio
 
                         ButtonOfCalculator(
                             enumButton = symbol,
                             idGroupOfButtons = 1,
-                            onClick = {calculatorAction(expression, symbol)},
+                            onClick = {calculatorAction(expression, symbol, answer)},
                             Modifier
                                 .weight(weightOfButton),
                         )
@@ -48,10 +52,10 @@ fun CreateButtons(expression: MutableState<String>){
 
                 ButtonOfCalculator(
                     enumButton = symbol,
-                    idGroupOfButtons = 2,
-                    onClick = {calculatorAction(expression, symbol)},
+                    idGroupOfButtons = 0,
+                    onClick = {calculatorAction(expression, symbol, answer)},
                     Modifier
-                        .weight(1f)
+                        .weight(ButtonRatio)
                 )
             }
 

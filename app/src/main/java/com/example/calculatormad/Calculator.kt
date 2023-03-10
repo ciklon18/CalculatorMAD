@@ -15,16 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.calculatormad.ui.theme.CalculateZone
-import com.example.calculatormad.ui.theme.DividerColor
-import com.example.calculatormad.ui.theme.TextColor
-import com.example.calculatormad.ui.theme.googleSansMedium
-import kotlin.math.exp
+import com.example.calculatormad.ui.theme.*
 
 @Composable
 fun Calculator() {
+    val answer = remember {
+        mutableStateOf("")
+    }
     val expression = remember {
-        mutableStateOf("0")
+        mutableStateOf(ZeroSymbol)
     }
     Box(
         modifier = Modifier
@@ -35,19 +34,19 @@ fun Calculator() {
             CreateTextCalculator()
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.32f)
+                    .fillMaxHeight(WorkspaceRatio)
                     .fillMaxWidth()
-            ){
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
                     Spacer(
                         modifier = Modifier
-                            .fillMaxHeight(0.24f)
+                            .fillMaxHeight(SpacerRatio)
                             .fillMaxWidth()
                     )
-                    CreateWorkspaceForCharterOutput(expression)
+                    CreateWorkspaceForCharterOutput(answer)
                     CreateWorkspaceForEnteringCharacters(expression)
                 }
 
@@ -55,14 +54,18 @@ fun Calculator() {
             Divider(
                 color = DividerColor,
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+                    .padding(
+                        start = DividerPaddingWidth,
+                        end = DividerPaddingWidth,
+                        top = DividerPaddingHeight,
+                        bottom = DividerPaddingHeight),
             )
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                CreateButtons(expression = expression)
+                CreateButtons(expression = expression, answer = answer)
             }
 
         }
@@ -71,17 +74,21 @@ fun Calculator() {
 }
 
 @Composable
-fun CreateTextCalculator(){
+fun CreateTextCalculator() {
     Box(
         contentAlignment = Alignment.TopStart,
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            .fillMaxHeight(0.05f)
+            .padding(
+                start = LabelTextPadding,
+                end = LabelTextPadding,
+                top = LabelTextPadding
+            )
+            .fillMaxHeight(LabelRatio)
             .fillMaxWidth(),
-        ) {
+    ) {
         Text(
-            text = "Calculator",
-            fontSize = 28.sp,
+            text = MainLabel,
+            fontSize = MainLabelSize,
             fontFamily = googleSansMedium,
             color = TextColor
         )
@@ -89,50 +96,59 @@ fun CreateTextCalculator(){
 }
 
 @Composable
-fun CreateWorkspaceForCharterOutput(expression : MutableState<String>){
+fun CreateWorkspaceForCharterOutput(expression: MutableState<String>) {
     Box(
         contentAlignment = Alignment.TopStart,
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(
+                start = WorkspacePadding,
+                end = WorkspacePadding
+            )
             .fillMaxWidth()
-            .fillMaxHeight(0.52f),
-    ){
+            .fillMaxHeight(WorkspaceOutputRatio),
+    ) {
         Text(
             text = expression.value,
-            color = CalculateZone,
-            fontSize = 40.sp
+            color = if (expression.value != TextError) CalculateZone else CalculatorZoneError,
+            fontSize = OutputExpressionSize
         )
     }
 }
+
 @Composable
-fun CreateWorkspaceForEnteringCharacters(expression : MutableState<String>){
+fun CreateWorkspaceForEnteringCharacters(expression: MutableState<String>) {
     Row(
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
             .fillMaxWidth()
-            .fillMaxHeight(),
-    ){
+            .fillMaxHeight()
+            .padding(
+                start = WorkspacePadding,
+                end = WorkspacePadding
+            ),
+    ) {
         Box(
             contentAlignment = Alignment.CenterEnd,
             modifier = Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(0.835f)
-        ){
+                .fillMaxWidth(WorkspaceInputRatio)
+        ) {
             Text(
                 text = expression.value,
-                color = CalculateZone,
-                fontSize =40.sp
+                color = if (expression.value !=TextError) CalculateZone else CalculatorZoneError,
+                fontSize = InputExpressionSize
             )
         }
         Box(
             contentAlignment = Alignment.CenterEnd,
             modifier = Modifier
                 .fillMaxSize()
-        ){
-            IconButton(onClick = {buttonDeleteLastSymbol(expression) },) {
+        ) {
+            IconButton(
+                onClick = { buttonDeleteLastSymbol(expression) }
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.vector),
-                    contentDescription = "Delete the last element",
+                    contentDescription = IconButtonDescription,
                     tint = Color.White
                 )
             }

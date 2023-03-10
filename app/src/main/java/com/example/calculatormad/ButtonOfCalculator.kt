@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.calculatormad.ui.theme.ButtonPurpleBlue
-import com.example.calculatormad.ui.theme.ButtonRedLilac
-import com.example.calculatormad.ui.theme.TextOfPurpleBlueButtons
-import com.example.calculatormad.ui.theme.TextOfRedLilacButtons
+import com.example.calculatormad.ui.theme.*
 
 
 @Composable
@@ -33,15 +30,15 @@ fun ButtonOfCalculator(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .padding(8.dp)
-            .clip(shape = RoundedCornerShape(28.dp))
+            .padding(ButtonBoxPadding)
+            .clip(shape = BoxShape)
             .clickable { onClick.invoke(enumButton) }
             .background(buttonBackgroundColor)
             .fillMaxSize(),
     ) {
         Text(
             text = enumButton.string,
-            fontSize = 32.sp,
+            fontSize = ButtonTextSize,
             color = fontColor,
         )
     }
