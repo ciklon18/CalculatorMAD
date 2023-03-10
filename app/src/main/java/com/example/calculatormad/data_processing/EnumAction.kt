@@ -1,4 +1,4 @@
-package com.example.calculatormad
+package com.example.calculatormad.data_processing
 
 enum class EnumAction(val string: String) {
     NumberZero("0"),
