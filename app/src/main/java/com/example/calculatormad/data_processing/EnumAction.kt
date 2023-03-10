@@ -18,7 +18,7 @@ enum class EnumAction(val string: String) {
     Add("+"),
     Subtract("-"),
     Multiply("×"),
-    Divide("/"),
+    Divide("÷"),
     Answer("="),
     Double(",")
 
