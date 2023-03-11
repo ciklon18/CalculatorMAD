@@ -7,7 +7,7 @@ import com.example.calculatormad.ui.theme.TextError
 
 val signs = arrayOf("+", "-", "×", "÷", "%")
 var signExist = false
-var signWasChanged = false
+var signOfFirstNumberWasChanged = false
 var firstNumberIsDouble = false
 var secondNumberIsDouble = false
 var firstNumber = "0"
@@ -25,6 +25,16 @@ fun calculatorAction(
             EnumAction.AllClean -> buttonAllClean(expression, answer)
             else -> {
 
+            }
+        }
+    } else if (expression.value == "-"){
+        when (enumName) {
+            EnumAction.AllClean -> buttonAllClean(expression, answer)
+            EnumAction.DeleteLastSymbol -> buttonDeleteLastSymbol(expression)
+            EnumAction.ChangeSign -> buttonChangeSign(expression)
+            else -> {
+                if (enumName.ordinal in 0..9)
+                    buttonAddNumber(expression, enumName)
             }
         }
     } else if (expression.value.length < 26) {
@@ -61,7 +71,11 @@ fun buttonAddNumber(
     expression: MutableState<String>,
     enumName: EnumAction
 ) {
-    if (expression.value == "0") {
+    if (expression.value == "-"){
+        expression.value += enumName.string
+        firstNumber = "-${enumName.string}"
+    }
+    else if (expression.value == "0") {
         expression.value = enumName.string
         firstNumber = enumName.string
     } else {
@@ -102,7 +116,7 @@ fun getResultOfCalculation(): Float {
         return firstNumber.toFloat() - secondNumber.toFloat()
     } else if (currentSign == "%") {
         return if (secondNumber == "")
-            firstNumber.toFloat() * 0.01f
+            (firstNumber.toFloat() * 100 / 10000)
         else
             (firstNumber.toFloat() * secondNumber.toFloat()) / 100
     }
@@ -145,17 +159,17 @@ fun buttonAnswer(expression: MutableState<String>, answer: MutableState<String>)
                 firstNumber = if (result == 0.0f) "0" else result.toString()
             }
 
-            signWasChanged = expression.value[0] == '-'
+            signOfFirstNumberWasChanged = expression.value[0] == '-'
             secondNumber = ""
         } else {
             removeDotFromFirstNumberAndChangeFlagIfNecessary()
             if (firstNumber != "") {
                 expression.value = firstNumber
-                signWasChanged = expression.value[0] == '-'
+                signOfFirstNumberWasChanged = expression.value[0] == '-'
             } else {
                 expression.value = "0"
                 firstNumber = ""
-                signWasChanged = false
+                signOfFirstNumberWasChanged = false
             }
         }
         signExist = false
@@ -164,7 +178,7 @@ fun buttonAnswer(expression: MutableState<String>, answer: MutableState<String>)
     } else {
         removeDotFromFirstNumberAndChangeFlagIfNecessary()
         expression.value = if (firstNumber != "") firstNumber else "0"
-        signWasChanged = expression.value[0] == '-'
+        signOfFirstNumberWasChanged = expression.value[0] == '-'
     }
 
     answer.value = if (expression.value == "Error") expression.value else " = ${expression.value}"
@@ -182,7 +196,13 @@ fun buttonMultiply(expression: MutableState<String>) {
 
 
 fun buttonSubtract(expression: MutableState<String>) {
-    expression.value = signChangePattern(expression.value, "-")
+    if (expression.value == "0"){
+        expression.value = "-"
+        firstNumber = "-"
+        signOfFirstNumberWasChanged = true
+    } else{
+        expression.value = signChangePattern(expression.value, "-")
+    }
 }
 
 
@@ -198,15 +218,18 @@ fun buttonRemainder(expression: MutableState<String>) {
 
 fun buttonChangeSign(expression: MutableState<String>) {
     if ((firstNumber != "") && (firstNumber != "0") && !signExist) {
-        if (!signWasChanged) {
+        if (!signOfFirstNumberWasChanged) {
             firstNumber = "-$firstNumber"
-            expression.value = firstNumber
-            signWasChanged = true
+            expression.value = firstNumber.replace(".",",")
+            signOfFirstNumberWasChanged = true
         } else if (firstNumber != "") {
             firstNumber = firstNumber.substring(1, firstNumber.length)
-            expression.value = firstNumber
-            signWasChanged = false
+            expression.value = firstNumber.replace(".",",")
+            signOfFirstNumberWasChanged = false
         }
+    } else if (expression.value == "-"){
+        expression.value = ""
+        signOfFirstNumberWasChanged = false
     }
 }
 
@@ -214,7 +237,7 @@ fun buttonAllClean(expression: MutableState<String>, answer: MutableState<String
     expression.value = "0"
     answer.value = ""
     signExist = false
-    signWasChanged = false
+    signOfFirstNumberWasChanged = false
     firstNumberIsDouble = false
     secondNumberIsDouble = false
     firstNumber = "0"
@@ -247,7 +270,7 @@ fun buttonDeleteLastSymbol(expression: MutableState<String>) {
 
         if (!signExist && (currValue.length == 2) && (currValue[0] == '-')) {
             firstNumber = "0"
-            signWasChanged = false
+            signOfFirstNumberWasChanged = false
         } else {
             val isContain = currValue[currValue.length - 1].toString()
 
@@ -255,7 +278,7 @@ fun buttonDeleteLastSymbol(expression: MutableState<String>) {
                 signExist = false
                 currentSign = ""
 
-            } else if (isContain == ".") {
+            } else if (isContain == ",") {
                 if (signExist)
                     secondNumberIsDouble = false
                 else
