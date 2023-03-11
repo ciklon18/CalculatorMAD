@@ -5,7 +5,7 @@ import com.example.calculatormad.data_processing.EnumAction
 import com.example.calculatormad.ui.theme.TextError
 
 
-val signs = arrayOf("+", "-", "*", "/", "%")
+val signs = arrayOf("+", "-", "×", "÷", "%")
 var signExist = false
 var signWasChanged = false
 var firstNumberIsDouble = false
@@ -15,7 +15,11 @@ var secondNumber = ""
 var currentSign = ""
 
 
-fun calculatorAction(expression: MutableState<String>, enumName: EnumAction, answer: MutableState<String>) {
+fun calculatorAction(
+    expression: MutableState<String>,
+    enumName: EnumAction,
+    answer: MutableState<String>
+) {
     if (expression.value == TextError) {
         when (enumName) {
             EnumAction.AllClean -> buttonAllClean(expression, answer)
@@ -25,7 +29,7 @@ fun calculatorAction(expression: MutableState<String>, enumName: EnumAction, ans
         }
     } else if (expression.value.length < 26) {
         when (enumName) {
-            EnumAction.AllClean -> buttonAllClean(expression,answer)
+            EnumAction.AllClean -> buttonAllClean(expression, answer)
             EnumAction.DeleteLastSymbol -> buttonDeleteLastSymbol(expression)
             EnumAction.ChangeSign -> buttonChangeSign(expression)
             EnumAction.Remainder -> buttonRemainder(expression)
@@ -87,25 +91,25 @@ fun signChangePattern(currValue: String, sign: String): String {
 }
 
 fun getResultOfCalculation(): Float {
-    if (currentSign == "*") {
-        return   firstNumber.toFloat() * secondNumber.toFloat()
-    } else if (currentSign == "/") {
+    if (currentSign == "×") {
+        return firstNumber.toFloat() * secondNumber.toFloat()
+    } else if (currentSign == "÷") {
         if (secondNumber != "0")
             return firstNumber.toFloat() / secondNumber.toFloat()
     } else if (currentSign == "+") {
         return firstNumber.toFloat() + secondNumber.toFloat()
     } else if (currentSign == "-") {
         return firstNumber.toFloat() - secondNumber.toFloat()
-    } else if (currentSign == "%" ) {
+    } else if (currentSign == "%") {
         return if (secondNumber == "")
-            firstNumber.toFloat() * 100 / 10000
+            firstNumber.toFloat() * 0.01f
         else
             (firstNumber.toFloat() * secondNumber.toFloat()) / 100
     }
     return 0.0f
 }
 
-fun removeDotFromFirstNumber() {
+fun removeDotFromFirstNumberAndChangeFlagIfNecessary() {
     if (firstNumber.isNotEmpty()) {
         if (firstNumber[firstNumber.length - 1] == '.') {
             firstNumber = firstNumber.substring(0, firstNumber.length - 1)
@@ -115,7 +119,7 @@ fun removeDotFromFirstNumber() {
 
 }
 
-fun removeDotFromSecondNumber() {
+fun removeDotFromSecondNumberAndChangeFlagIfNecessary() {
     if (secondNumber.isNotEmpty()) {
         if (secondNumber[secondNumber.length - 1] == '.') {
             secondNumber = secondNumber.substring(0, secondNumber.length - 1)
@@ -124,29 +128,27 @@ fun removeDotFromSecondNumber() {
     }
 
 }
-
+fun changeOutputCharacterToComma(expression: MutableState<String>, answer: MutableState<String>){
+    expression.value = expression.value.replace(".", ",")
+    answer.value = answer.value.replace(".", ",")
+}
 fun buttonAnswer(expression: MutableState<String>, answer: MutableState<String>) {
     if (signs.contains(currentSign)) {
-        if ((secondNumber != "") || (currentSign == "%" && secondNumber == "")) {
-            removeDotFromSecondNumber()
-            if (currentSign == "/" && secondNumber == "0") {
+        if ((secondNumber != "") || (currentSign == "%")) {
+            removeDotFromSecondNumberAndChangeFlagIfNecessary()
+
+            if (currentSign == "÷" && secondNumber == "0") {
                 expression.value = TextError
             } else {
                 val result = getResultOfCalculation()
-                if (result == 0.0f) {
-                    expression.value = "0"
-                    firstNumber = "0"
-                } else {
-                    expression.value = result.toString()
-                    firstNumber = result.toString()
-                }
+                expression.value = if (result == 0.0f) "0" else result.toString()
+                firstNumber = if (result == 0.0f) "0" else result.toString()
             }
-
 
             signWasChanged = expression.value[0] == '-'
             secondNumber = ""
         } else {
-            removeDotFromFirstNumber()
+            removeDotFromFirstNumberAndChangeFlagIfNecessary()
             if (firstNumber != "") {
                 expression.value = firstNumber
                 signWasChanged = expression.value[0] == '-'
@@ -156,27 +158,26 @@ fun buttonAnswer(expression: MutableState<String>, answer: MutableState<String>)
                 signWasChanged = false
             }
         }
-        firstNumberIsDouble = false
         signExist = false
-        secondNumberIsDouble = false
         currentSign = ""
-
+        secondNumberIsDouble = false
     } else {
-        removeDotFromFirstNumber()
-        expression.value = if (firstNumber != "") firstNumber else "0.0"
+        removeDotFromFirstNumberAndChangeFlagIfNecessary()
+        expression.value = if (firstNumber != "") firstNumber else "0"
         signWasChanged = expression.value[0] == '-'
     }
+
     answer.value = if (expression.value == "Error") expression.value else " = ${expression.value}"
+    changeOutputCharacterToComma(expression, answer)
 }
 
 
 fun buttonDivide(expression: MutableState<String>) {
-    expression.value = signChangePattern(expression.value, "/")
+    expression.value = signChangePattern(expression.value, "÷")
 }
 
 fun buttonMultiply(expression: MutableState<String>) {
-    expression.value = signChangePattern(expression.value, "*")
-
+    expression.value = signChangePattern(expression.value, "×")
 }
 
 
@@ -207,7 +208,6 @@ fun buttonChangeSign(expression: MutableState<String>) {
             signWasChanged = false
         }
     }
-
 }
 
 fun buttonAllClean(expression: MutableState<String>, answer: MutableState<String>) {
@@ -228,12 +228,12 @@ fun buttonDouble(expression: MutableState<String>) {
             expression.value += "0"
             secondNumber += "0"
         }
-        expression.value += "."
+        expression.value += ","
         secondNumber += "."
         secondNumberIsDouble = true
 
     } else if (!firstNumberIsDouble) {
-        expression.value += "."
+        expression.value += ","
         firstNumber += "."
         firstNumberIsDouble = true
     }
