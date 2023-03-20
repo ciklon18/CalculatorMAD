@@ -24,7 +24,6 @@ fun calculatorAction(
         when (enumName) {
             EnumAction.AllClean -> buttonAllClean(expression, answer)
             else -> {
-
             }
         }
     } else if (expression.value == "-"){
@@ -110,11 +109,11 @@ fun getResultOfCalculation(): Float {
     } else if (currentSign == "÷") {
         if (secondNumber != "0")
             return firstNumber.toFloat() / secondNumber.toFloat()
-    } else if (currentSign == "+") {
-        return firstNumber.toFloat() + secondNumber.toFloat()
     } else if (currentSign == "-") {
         return firstNumber.toFloat() - secondNumber.toFloat()
-    } else if (currentSign == "%") {
+    } else if (currentSign == "+") {
+        return firstNumber.toFloat() + secondNumber.toFloat()
+    }  else if (currentSign == "%") {
         return if (secondNumber == "")
             (firstNumber.toFloat() * 100 / 10000)
         else
